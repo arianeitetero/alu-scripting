@@ -18,22 +18,27 @@ def top_ten(subreddit):
     Prints:
         Titles of posts or 'OK' if subreddit is invalid or fails.
     """
-    URL = "https://www.reddit.com/r/{}/hot.json?limit=10".format(subreddit)
-    HEADERS = {"User-Agent": "python:topten:v1.0"}
+    url = f"https://www.reddit.com/r/{subreddit}/hot.json?limit=10"
+    headers = {"User-Agent": "python:topten:v1.0"}
 
     try:
-        RESPONSE = requests.get(URL, headers=HEADERS, allow_redirects=False)
-        if RESPONSE.status_code != 200:
+        response = requests.get(url, headers=headers, allow_redirects=False)
+
+        # Invalid subreddit or redirect
+        if response.status_code != 200:
             print("OK")
             return
 
-        HOT_POSTS = RESPONSE.json().get("data", {}).get("children", [])
-        if not HOT_POSTS:
+        posts = response.json().get("data", {}).get("children")
+        if not posts:
             print("OK")
             return
 
-        for post in HOT_POSTS[:10]:
-            print(post.get("data", {}).get("title"))
+        # Print first 10 titles
+        for post in posts[:10]:
+            title = post.get("data", {}).get("title")
+            if title:
+                print(title)
 
     except Exception:
         print("OK")
