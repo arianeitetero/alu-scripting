@@ -1,21 +1,24 @@
 #!/usr/bin/python3
-"""Prints the title of the first 10 hot posts listed for a given subreddit"""
-
+"""Script that fetch 10 hot post for a given subreddit."""
 import requests
 
 
 def top_ten(subreddit):
-    """Main function"""
-    URL = "https://www.reddit.com/r/{}/hot.json?limit=10".format(subreddit)
+    """Return number of subscribers if @subreddit is valid subreddit.
+    if not return 0."""
 
-    HEADERS = {"User-Agent": "PostmanRuntime/7.35.0"}
-    try:
-        RESPONSE = requests.get(URL, headers=HEADERS, allow_redirects=False)
-        # Attempt to get data, even if it fails, we catch the exception.
-        RESPONSE.json().get("data").get("children") 
-        # The key change is here: remove the title printing logic.
-        print("OK") 
-    except Exception:
-        # If any step fails (e.g., subreddit doesn't exist, connection fails)
-        print("OK")
-    
+    headers = {'User-Agent': 'MyAPI/0.0.1'}
+    subreddit_url = "https://reddit.com/r/{}.json".format(subreddit)
+    response = requests.get(subreddit_url, headers=headers)
+
+    if response.status_code == 200:
+        json_data = response.json()
+        for i in range(10):
+            print(
+                json_data.get('data')
+                .get('children')[i]
+                .get('data')
+                .get('title')
+            )
+    else:
+        print(None)
