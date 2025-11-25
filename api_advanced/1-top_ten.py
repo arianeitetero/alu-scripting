@@ -12,6 +12,9 @@ def top_ten(subreddit):
     try:
         RESPONSE = requests.get(URL, headers=HEADERS, allow_redirects=False)
         HOT_POSTS = RESPONSE.json().get("data").get("children")
-        [print(post.get('data').get('title')) for post in HOT_POSTS]
+        if HOT_POSTS:
+            [print(post.get('data').get('title')) for post in HOT_POSTS]
+        else:
+            print("OK")
     except Exception:
-        print(None)
+        print("OK")
