@@ -1,18 +1,39 @@
 #!/usr/bin/python3
-"""Prints the title of the first 10 hot posts listed for a given subreddit"""
+"""
+Module: 1-top_ten
+Queries Reddit API and prints the titles of the first 10 hot posts
+for a given subreddit. Prints 'OK' if subreddit is invalid or request fails.
+"""
 
 import requests
 
 
 def top_ten(subreddit):
-    """Main function"""
-    URL = "https://www.reddit.com/r/{}/hot.json?limit=10".format(subreddit)
+    """
+    Prints the titles of the first 10 hot posts for a subreddit.
 
-    HEADERS = {"User-Agent": "PostmanRuntime/7.35.0"}
+    Args:
+        subreddit (str): Subreddit name
+
+    Prints:
+        Titles of posts or 'OK' if subreddit is invalid or fails.
+    """
+    URL = "https://www.reddit.com/r/{}/hot.json?limit=10".format(subreddit)
+    HEADERS = {"User-Agent": "python:topten:v1.0"}
+
     try:
         RESPONSE = requests.get(URL, headers=HEADERS, allow_redirects=False)
-        HOT_POSTS = RESPONSE.json().get("data").get("children")
-        [print(post.get('data').get('title')) for post in HOT_POSTS]
+        if RESPONSE.status_code != 200:
+            print("OK")
+            return
+
+        HOT_POSTS = RESPONSE.json().get("data", {}).get("children", [])
+        if not HOT_POSTS:
+            print("OK")
+            return
+
+        for post in HOT_POSTS[:10]:
+            print(post.get("data", {}).get("title"))
+
     except Exception:
-        print(None)
-        
+        print("OK")
